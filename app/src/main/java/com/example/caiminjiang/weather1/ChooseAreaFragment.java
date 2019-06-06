@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.caiminjiang.weather1.db.City;
 import com.example.caiminjiang.weather1.db.County;
 import com.example.caiminjiang.weather1.db.Province;
+import com.example.caiminjiang.weather1.gson.Weather;
 import com.example.caiminjiang.weather1.util.HttpUtil;
 import com.example.caiminjiang.weather1.util.Utility;
 
@@ -87,10 +88,17 @@ public class ChooseAreaFragment extends Fragment {
 
                 }else if(currentLevel==LEVEL_COUNTY){
                     String weatherID=countyList.get(position).getWeatherID();
-                    Intent intent=new Intent(getActivity(),WeatherActivity.class);
-                    intent.putExtra("weather_id",weatherID);
-                    startActivity(intent);
-                    getActivity().finish();
+                    if(getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherID);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else if(getActivity() instanceof WeatherActivity){
+                        WeatherActivity activity=(WeatherActivity)getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefreshLayout.setRefreshing(true);
+                        activity.requestWeather(weatherID);
+                    }
 
                 }
             }
