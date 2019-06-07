@@ -1,5 +1,6 @@
 package com.example.caiminjiang.weather1;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.caiminjiang.weather1.gson.Forecast;
 import com.example.caiminjiang.weather1.gson.Weather;
+import com.example.caiminjiang.weather1.service.AutoUpateService;
 import com.example.caiminjiang.weather1.util.HttpUtil;
 import com.example.caiminjiang.weather1.util.Utility;
 
@@ -188,6 +190,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void showWeatherInfo(Weather weather) {
+        if(weather !=null &&"ok".equals(weather.status)){
         String cityName = weather.basic.cityName;
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
         String degree = weather.now.temperature + "°C";
@@ -221,5 +224,12 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+
+        Intent intent=new Intent(this,AutoUpateService.class);
+        startService(intent);
+    }else{
+            Toast.makeText(WeatherActivity.this,"获取天气信息失败",Toast.LENGTH_SHORT).show();
+        }
     }
+
 }
